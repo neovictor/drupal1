@@ -1,0 +1,6 @@
+[submodule "sites/all/modules/captcha"]
+	path = sites/all/modules/captcha
+	url = http://git.drupal.org/project/captcha
+[submodule "sites/all/modules/link"]
+	path = sites/all/modules/link
+	url = http://git.drupal.org/project/link
