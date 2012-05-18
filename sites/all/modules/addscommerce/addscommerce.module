@@ -1,0 +1,34 @@
+<?php
+/**
+ * implements hook_menu
+ */
+function addscommerce_menu() {
+	$menu = array();
+	$menu['addscommerce'] = array(
+		'title'			=> 'Addons to commerce',
+		'page callback'		=> 'addscommerce_page',
+		'access callback'   	=> TRUE
+	);
+	return $menu;
+}
+/**
+ * implements page
+ */
+function addscommerce_page(){
+	return '!';
+}
+/**
+ * implements hook_commerce_currency_info
+ */
+function addscommerce_commerce_currency_info() {
+	
+}
+/**
+ * implements hook_commerce_currency_info
+ */
+function addscommerce_commerce_currency_info_alter(&$currencies) {
+	//$currencies['RUB']['symbol'] = 'rubles';
+	//dsm($currencies);
+}
+
+

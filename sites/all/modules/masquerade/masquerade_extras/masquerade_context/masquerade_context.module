@@ -1,0 +1,57 @@
+<?php
+/**
+ * @file
+ *  Adds Context module support for masquerade.
+ */
+
+/**
+ * Implements hook_context_plugins().
+ *
+ * Adds a masquerading condition to the context module.
+ *
+ * @see hook_context_plugins()
+ */
+function masquerade_context_plugins() {
+  $plugins = array();
+  $plugins['masquerade_is_masquerading'] = array(
+    'handler' => array(
+      'path' => drupal_get_path('module', 'masquerade_context') .'/plugins/condition',
+      'file' => 'masquerade_is_masquerading.inc',
+      'class' => 'masquerade_is_masquerading_context_condition',
+      'parent' => 'context_condition',
+    ),
+  );
+  return $plugins;
+}
+
+/**
+ * Implements hook_context_registry().
+ *
+ * Tells the Context module to look for our custom plugins.
+ *
+ * @see hook_context_registry()
+ */
+function masquerade_context_registry() {
+  return array(
+    'conditions' => array(
+      'masquerade_is_masquerading' => array(
+        'title' => t('User is Masquerading'),
+        'description' => t('Sets this context when the current user is posing as someone else.'),
+        'plugin' => 'masquerade_is_masquerading',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_context_page_reaction().
+ *
+ * Triggers our custom context reactions.
+ *
+ * @see hook_context_page_reaction()
+ */
+function masquerade_context_page_reaction() {
+  if ($plugin = context_get_plugin('condition', 'masquerade_is_masquerading')) {
+    $plugin->execute();
+  }
+}

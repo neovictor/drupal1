@@ -1,0 +1,82 @@
+<?php
+/**
+ * Implements hook_menu
+ */
+function modulequeue_menu(){
+    $menu = array();
+    $menu['module_queue'] = array(
+        'title'             => 'Module queue',
+        'page callback'     => 'module_queue_page',
+        'access callback'   => TRUE
+    );
+    return $menu;
+}
+/**
+ * function module_queue_page
+ */
+function module_queue_page(){
+    $result = modulequeue_load_data();
+    //$data = array('title' => '!!!', 'nid' => '522');
+    //modulequeue_queue_process($data);
+    dsm($result);
+    $data = false;
+    $changes = db_query("SELECT nid, title FROM {node} WHERE title='zzz'");
+    foreach($changes as $node) {
+        $data[] = array(
+            'nid'   => $node->nid,
+            'title' => $node->title
+        );
+    }
+    dsm($data);
+    return 'True';
+}
+
+/**
+ * implements hook_cron_queue_info
+ */
+function modulequeue_cron_queue_info() {
+    $queue['modulequeue_queue'] = array(
+        'worker callback'   => 'modulequeue_queue_process',
+        'time'              => 20
+    );
+    return $queue;
+}
+/**
+ * Implements hook_cron
+ */
+function modulequeue_cron() {
+    $items = modulequeue_load_data();
+    
+    if($items) {
+        $queue = DrupalQueue::get('modulequeue_queue');
+        $queue->createQueue();
+        
+        foreach($items as $item) {
+            $queue->createItem($item);
+        }
+    }
+}
+/**
+ * function modulequeue_load_data
+ */
+function modulequeue_load_data() {
+    $data = array();
+    $nodes = db_query("SELECT nid, title FROM {node} WHERE type='page'");
+    foreach($nodes as $node) {
+        $data[] = array(
+            'nid'   => $node->nid,
+            'title' => $node->title
+        );
+    }
+    return $data;
+}
+/**
+ * function modulequeue_queue_process
+ */
+function modulequeue_queue_process($item){
+    dsm($item);
+    $item['title'] = 'zzz';
+    if($item) {
+        db_query("UPDATE {node} SET title = '$item[title]' WHERE nid = '$item[nid]'");
+    }
+}

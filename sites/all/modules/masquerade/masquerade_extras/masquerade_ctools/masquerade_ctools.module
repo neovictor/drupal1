@@ -1,0 +1,20 @@
+<?php
+/**
+ * @file
+ *  Allows Ctools to look for masquerade plugins.
+ */
+
+/**
+ * Implements hook_ctools_plugin_directory().
+ *
+ * Tell ctools where to look for plugins.
+ *
+ * @see hook_ctools_plugin_directory()
+ */
+function masquerade_ctools_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'ctools') {
+    return "plugins/$plugin_type";
+  }
+
+  return '';
+}
